@@ -1,0 +1,50 @@
+class Solution {
+    public int cntCoprime(int[] arr) {
+        int max = 0;
+        for (int x : arr) max = Math.max(max, x);
+
+        int[] freq = new int[max + 1];
+        for (int x : arr) freq[x]++;
+
+        int[] mobius = getMobius(max);
+        int[] count = new int[max + 1];
+
+        // count how many numbers are divisible by d
+        for (int i = 1; i <= max; i++) {
+            for (int j = i; j <= max; j += i) {
+                count[i] += freq[j];
+            }
+        }
+
+        long totalCoprimePairs = 0;
+
+        for (int i = 1; i <= max; i++) {
+            long c = count[i];
+            long pairs = c * (c - 1) / 2;
+            totalCoprimePairs += mobius[i] * pairs;
+        }
+
+        return (int) totalCoprimePairs;
+    }
+
+    // Generate the Möbius function using sieve
+    private int[] getMobius(int n) {
+        int[] mobius = new int[n + 1];
+        Arrays.fill(mobius, 1);
+        boolean[] isPrime = new boolean[n + 1];
+        Arrays.fill(isPrime, true);
+
+        for (int i = 2; i <= n; i++) {
+            if (isPrime[i]) {
+                for (int j = i; j <= n; j += i) {
+                    mobius[j] *= -1;
+                    isPrime[j] = false;
+                }
+                for (long j = 1L * i * i; j <= n; j += i * i) {
+                    mobius[(int) j] = 0;
+                }
+            }
+        }
+        return mobius;
+    }
+}
