@@ -1,0 +1,43 @@
+class Solution {
+    public int maxCircularSum(int arr[]) {
+        int totalSum = 0;
+        int maxKadane = kadane(arr); // Case 1: Non-wrapping max
+        
+        // Inverting array values for Case 2
+        int minKadane = 0;
+        int currMin = arr[0], minSoFar = arr[0];
+        int currMax = arr[0], maxSoFar = arr[0];
+
+        totalSum = arr[0];
+
+        for (int i = 1; i < arr.length; i++) {
+            // Total sum
+            totalSum += arr[i];
+
+            // Max subarray sum (Kadane)
+            currMax = Math.max(arr[i], currMax + arr[i]);
+            maxSoFar = Math.max(maxSoFar, currMax);
+
+            // Min subarray sum (Kadane)
+            currMin = Math.min(arr[i], currMin + arr[i]);
+            minSoFar = Math.min(minSoFar, currMin);
+        }
+
+        // If all numbers are negative, minSoFar == totalSum
+        if (maxSoFar < 0) return maxSoFar;
+
+        return Math.max(maxSoFar, totalSum - minSoFar);
+    }
+
+    // Standard Kadane's Algorithm
+    private int kadane(int[] arr) {
+        int maxEndingHere = arr[0];
+        int maxSoFar = arr[0];
+
+        for (int i = 1; i < arr.length; i++) {
+            maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+            maxSoFar = Math.max(maxSoFar, maxEndingHere);
+        }
+        return maxSoFar;
+    }
+}
