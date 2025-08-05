@@ -1,0 +1,27 @@
+class Solution {
+    public boolean isPalinSent(String s) {
+        // StringBuilder to store cleaned characters
+        StringBuilder cleaned = new StringBuilder();
+
+        // Traverse and clean the string
+        for (char ch : s.toCharArray()) {
+            if (Character.isLetterOrDigit(ch)) {
+                cleaned.append(Character.toLowerCase(ch));
+            }
+        }
+
+        // Check if cleaned string is a palindrome
+        int left = 0;
+        int right = cleaned.length() - 1;
+
+        while (left < right) {
+            if (cleaned.charAt(left) != cleaned.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+
+        return true;
+    }
+}
