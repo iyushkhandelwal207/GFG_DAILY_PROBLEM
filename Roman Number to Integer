@@ -1,0 +1,35 @@
+class Solution {
+    public int romanToDecimal(String s) {
+        // Map for Roman numerals and their values
+        java.util.Map<Character, Integer> romanMap = new java.util.HashMap<>();
+        romanMap.put('I', 1);
+        romanMap.put('V', 5);
+        romanMap.put('X', 10);
+        romanMap.put('L', 50);
+        romanMap.put('C', 100);
+        romanMap.put('D', 500);
+        romanMap.put('M', 1000);
+        
+        int total = 0;
+        int n = s.length();
+
+        for (int i = 0; i < n; i++) {
+            int current = romanMap.get(s.charAt(i));
+            int next = 0;
+            
+            // Get value of the next character if it exists
+            if (i + 1 < n) {
+                next = romanMap.get(s.charAt(i + 1));
+            }
+
+            // If current is less than next, subtract it (like IV = 5 - 1 = 4)
+            if (current < next) {
+                total -= current;
+            } else {
+                total += current;
+            }
+        }
+
+        return total;
+    }
+}
