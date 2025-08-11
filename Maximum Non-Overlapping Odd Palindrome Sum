@@ -1,0 +1,85 @@
+import java.util.*;
+
+class Solution {
+    private int[] manacherOdd(String s) {
+        int n = s.length();
+        int[] d1 = new int[n];
+        int l = 0, r = -1;
+        for (int i = 0; i < n; i++) {
+            int k = (i > r) ? 1 : Math.min(d1[l + r - i], r - i + 1);
+            while (i - k >= 0 && i + k < n && s.charAt(i - k) == s.charAt(i + k)) {
+                k++;
+            }
+            d1[i] = k;
+            if (i + k - 1 > r) {
+                l = i - k + 1;
+                r = i + k - 1;
+            }
+        }
+        return d1;
+    }
+
+    private int[] computeEndLen(String s, int[] d1) {
+        int n = s.length();
+        int[] endLen = new int[n];
+        int[] R = new int[n];
+        for (int i = 0; i < n; i++) {
+            R[i] = i + d1[i] - 1;
+        }
+        Deque<Integer> q = new ArrayDeque<>();
+        for (int p = 0; p < n; p++) {
+            q.addLast(p);
+            while (!q.isEmpty() && R[q.peekFirst()] < p) {
+                q.pollFirst();
+            }
+            if (!q.isEmpty()) {
+                endLen[p] = 2 * (p - q.peekFirst()) + 1;
+            } else {
+                endLen[p] = 0;
+            }
+        }
+        return endLen;
+    }
+
+    public int maxSum(String s) {
+        int n = s.length();
+        if (n < 2) return 0;
+
+        // Forward
+        int[] d1 = manacherOdd(s);
+        int[] endLen = computeEndLen(s, d1);
+
+        // Reverse
+        StringBuilder rsb = new StringBuilder(s).reverse();
+        String rs = rsb.toString();
+        int[] d1r = manacherOdd(rs);
+        int[] endLenR = computeEndLen(rs, d1r);
+
+        // startLen from reversed endLen
+        int[] startLen = new int[n];
+        for (int i = 0; i < n; i++) {
+            startLen[n - 1 - i] = endLenR[i];
+        }
+
+        // Prefix max
+        int[] bestPref = new int[n];
+        bestPref[0] = endLen[0];
+        for (int i = 1; i < n; i++) {
+            bestPref[i] = Math.max(bestPref[i - 1], endLen[i]);
+        }
+
+        // Suffix max
+        int[] bestSuf = new int[n];
+        bestSuf[n - 1] = startLen[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            bestSuf[i] = Math.max(bestSuf[i + 1], startLen[i]);
+        }
+
+        // Answer
+        int ans = 0;
+        for (int i = 0; i + 1 < n; i++) {
+            ans = Math.max(ans, bestPref[i] + bestSuf[i + 1]);
+        }
+        return ans;
+    }
+}
