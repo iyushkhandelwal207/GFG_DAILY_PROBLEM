@@ -1,0 +1,21 @@
+import java.util.*;
+
+class Solution {
+    public void rearrange(int[] arr, int x) {
+        // Convert int[] to Integer[] because Arrays.sort with comparator
+        // works only on objects, not primitives
+        Integer[] temp = Arrays.stream(arr).boxed().toArray(Integer[]::new);
+        
+        // Sort with custom comparator
+        Arrays.sort(temp, (a, b) -> {
+            int diff1 = Math.abs(a - x);
+            int diff2 = Math.abs(b - x);
+            return diff1 - diff2;  // smaller difference comes first
+        });
+        
+        // Copy back to arr
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = temp[i];
+        }
+    }
+}
