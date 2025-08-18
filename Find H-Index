@@ -1,0 +1,32 @@
+import java.util.*;
+
+class Solution {
+    public int hIndex(int[] citations) {
+        Arrays.sort(citations); // sort ascending
+        int n = citations.length;
+        int h = 0;
+
+        // check from the end (highest citations first)
+        for (int i = 0; i < n; i++) {
+            int papersWithAtLeast = n - i; // number of papers with citations >= citations[i]
+            if (citations[i] >= papersWithAtLeast) {
+                h = papersWithAtLeast;
+                break;
+            }
+        }
+        return h;
+    }
+
+    public static void main(String[] args) {
+        Solution obj = new Solution();
+
+        int[] citations1 = {3, 0, 5, 3, 0};
+        System.out.println(obj.hIndex(citations1)); // 3
+
+        int[] citations2 = {5, 1, 2, 4, 1};
+        System.out.println(obj.hIndex(citations2)); // 2
+
+        int[] citations3 = {0, 0};
+        System.out.println(obj.hIndex(citations3)); // 0
+    }
+}
