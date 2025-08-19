@@ -5,29 +5,26 @@ class Solution {
         int n = arr.length;
         ArrayList<Integer> ans = new ArrayList<>(Collections.nCopies(n, -1));
 
-        // Monotonic increasing stack (value, index)
-        ArrayList<int[]> sortedList = new ArrayList<>();
+        // Step 1: Build suffix minima array
+        int[] min = new int[n];
+        min[n - 1] = arr[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            min[i] = Math.min(arr[i], min[i + 1]);
+        }
 
-        for (int i = n - 1; i >= 0; i--) {
-            int low = 0, high = sortedList.size() - 1, res = -1;
-
-            // Binary search for farthest smaller
-            while (low <= high) {
-                int mid = (low + high) / 2;
-                if (sortedList.get(mid)[0] < arr[i]) {
-                    res = sortedList.get(mid)[1]; // candidate index
-                    low = mid + 1; // try farther
+        // Step 2: Binary search for farthest smaller element
+        for (int i = 0; i < n; i++) {
+            int l = i + 1, h = n - 1, res = -1;
+            while (l <= h) {
+                int mid = (l + h) / 2;
+                if (min[mid] < arr[i]) {
+                    res = mid;      // valid candidate
+                    l = mid + 1;    // search farther right
                 } else {
-                    high = mid - 1;
+                    h = mid - 1;
                 }
             }
-
             ans.set(i, res);
-
-            // Maintain increasing order by value
-            if (sortedList.isEmpty() || arr[i] < sortedList.get(sortedList.size() - 1)[0]) {
-                sortedList.add(new int[]{arr[i], i});
-            }
         }
 
         return ans;
