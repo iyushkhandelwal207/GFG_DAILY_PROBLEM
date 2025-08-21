@@ -1,0 +1,37 @@
+import java.util.*;
+
+class Solution {
+    public int maxMinDiff(int[] arr, int k) {
+        Arrays.sort(arr);
+        int n = arr.length;
+        
+        int low = 0, high = arr[n - 1] - arr[0];
+        int ans = 0;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (canPlace(arr, k, mid)) {
+                ans = mid;
+                low = mid + 1;  // try bigger min difference
+            } else {
+                high = mid - 1; // reduce min difference
+            }
+        }
+        return ans;
+    }
+
+    private boolean canPlace(int[] arr, int k, int minDiff) {
+        int count = 1;  // always place first element
+        int lastPlaced = arr[0];
+
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] - lastPlaced >= minDiff) {
+                count++;
+                lastPlaced = arr[i];
+                if (count >= k) return true;
+            }
+        }
+        return false;
+    }
+}
