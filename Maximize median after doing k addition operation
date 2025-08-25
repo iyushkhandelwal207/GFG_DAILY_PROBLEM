@@ -1,0 +1,47 @@
+class Solution {
+    public int maximizeMedian(int[] arr, int k) {
+        // code here
+        Arrays.sort(arr);
+        int n = arr.length;
+        int iniMedian;
+        if(n % 2 == 1) {
+            iniMedian = arr[n/2];
+        } else {
+            iniMedian = (arr[n/2]+ arr[n/2-1])/2;
+            
+        }
+        long low = iniMedian, high = iniMedian + k, best = iniMedian;
+        while(low <= high) {
+            long mid = (low + high)/ 2;
+            if(isPossible(arr,mid, k)) {
+                best = mid;
+                low = mid+1;
+            } else {
+                high = mid-1;
+            }
+        }
+        return (int) best;
+    }
+    private boolean isPossible(int[] arr, long target, long k) {
+        int n = arr.length;
+        if(n % 2 == 1) {
+            for(int i = n/2; i< n; i++){
+                if(arr[i] < target) k -= (target-arr[i]);
+                if(k < 0) return false;
+            }
+        } else {
+            int left = arr[n/2-1];
+            int right = arr[n/2];
+            long need = Math.max(0L, 2*target - (left+right));
+            k -= need;
+            if(k < 0) return false;
+            for(int i = n/2+1; i < n; i++){
+                if(arr[i] < target) k-= (target-arr[i]);
+                if(k < 0) return false;
+            }
+        }
+        return true;
+    }
+}
+
+
