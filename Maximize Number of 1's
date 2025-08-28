@@ -1,0 +1,26 @@
+class Solution {
+    public int maxOnes(int arr[], int k) {
+        int left = 0, right = 0;
+        int zeros = 0, maxLen = 0;
+
+        while (right < arr.length) {
+            // If current element is 0, count it
+            if (arr[right] == 0) {
+                zeros++;
+            }
+
+            // If zeros exceed k, shrink window
+            while (zeros > k) {
+                if (arr[left] == 0) {
+                    zeros--;
+                }
+                left++;
+            }
+
+            // Update max length
+            maxLen = Math.max(maxLen, right - left + 1);
+            right++;
+        }
+        return maxLen;
+    }
+}
