@@ -1,0 +1,25 @@
+class Solution {
+    public static String smallestWindow(String s, String p) {
+        if (p.length() == 0) return "";
+        if (s.length() < p.length()) return "";
+        int[] need = new int[256];
+        for (char c : p.toCharArray()) need[c]++;
+        int[] have = new int[256];
+        int formed = 0, required = p.length();
+        int l = 0, start = -1, minLen = Integer.MAX_VALUE;
+        for (int r = 0; r < s.length(); r++) {
+            char cr = s.charAt(r);
+            have[cr]++;
+            if (need[cr] != 0 && have[cr] <= need[cr]) formed++;
+            if (formed == required) {
+                while (l <= r && (need[s.charAt(l)] == 0 || have[s.charAt(l)] > need[s.charAt(l)])) {
+                    if (have[s.charAt(l)] > need[s.charAt(l)]) have[s.charAt(l)]--;
+                    l++;
+                }
+                int len = r - l + 1;
+                if (len < minLen) { minLen = len; start = l; }
+            }
+        }
+        return start == -1 ? "" : s.substring(start, start + minLen);
+    }
+}
