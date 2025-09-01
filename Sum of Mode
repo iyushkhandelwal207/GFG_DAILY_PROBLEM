@@ -1,0 +1,64 @@
+import java.util.*;
+
+class Solution {
+    public long sumOfModes(int[] arr, int k) {
+        int n = arr.length;
+        Map<Integer, Integer> freq = new HashMap<>();
+        TreeMap<Integer, TreeSet<Integer>> bucket = new TreeMap<>();
+        
+        // Helper to insert into bucket
+        Runnable updateMax = () -> {}; // just placeholder
+
+        long sum = 0;
+
+        // Build initial window
+        for (int i = 0; i < k; i++) {
+            add(arr[i], freq, bucket);
+        }
+        sum += getMode(bucket);
+
+        // Slide window
+        for (int i = k; i < n; i++) {
+            remove(arr[i-k], freq, bucket);
+            add(arr[i], freq, bucket);
+            sum += getMode(bucket);
+        }
+        
+        return sum;
+    }
+
+    private void add(int num, Map<Integer,Integer> freq, TreeMap<Integer,TreeSet<Integer>> bucket) {
+        int oldFreq = freq.getOrDefault(num, 0);
+        int newFreq = oldFreq + 1;
+        freq.put(num, newFreq);
+        
+        if (oldFreq > 0) {
+            TreeSet<Integer> set = bucket.get(oldFreq);
+            set.remove(num);
+            if (set.isEmpty()) bucket.remove(oldFreq);
+        }
+        
+        bucket.computeIfAbsent(newFreq, x -> new TreeSet<>()).add(num);
+    }
+
+    private void remove(int num, Map<Integer,Integer> freq, TreeMap<Integer,TreeSet<Integer>> bucket) {
+        int oldFreq = freq.get(num);
+        int newFreq = oldFreq - 1;
+        
+        TreeSet<Integer> set = bucket.get(oldFreq);
+        set.remove(num);
+        if (set.isEmpty()) bucket.remove(oldFreq);
+        
+        if (newFreq == 0) {
+            freq.remove(num);
+        } else {
+            freq.put(num, newFreq);
+            bucket.computeIfAbsent(newFreq, x -> new TreeSet<>()).add(num);
+        }
+    }
+
+    private int getMode(TreeMap<Integer,TreeSet<Integer>> bucket) {
+        int maxFreq = bucket.lastKey();
+        return bucket.get(maxFreq).first(); // smallest number in maxFreq bucket
+    }
+}
