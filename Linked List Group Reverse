@@ -1,0 +1,45 @@
+/*
+class Node
+{
+    int data;
+    Node next;
+    Node(int key)
+    {
+        data = key;
+        next = null;
+    }
+}
+*/
+
+class Solution {
+    public Node reverseKGroup(Node head, int k) {
+        if (head == null || k == 1) return head;
+
+        Node dummy = new Node(0);
+        dummy.next = head;
+        Node prevGroup = dummy;
+        Node curr = head;
+
+        while (curr != null) {
+            Node groupStart = curr;
+            Node prev = null;
+            int count = 0;
+
+            // Reverse k nodes or until the list ends
+            while (curr != null && count < k) {
+                Node nextNode = curr.next;
+                curr.next = prev;
+                prev = curr;
+                curr = nextNode;
+                count++;
+            }
+
+            // Connect previous group to newly reversed part
+            prevGroup.next = prev;
+            groupStart.next = curr;
+            prevGroup = groupStart;
+        }
+
+        return dummy.next;
+    }
+}
