@@ -1,0 +1,29 @@
+class Solution {
+    public int lengthOfLoop(Node head) {
+        if (head == null || head.next == null) return 0;
+
+        Node slow = head, fast = head;
+
+        // Detect loop
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if (slow == fast) { // loop detected
+                return countLoopLength(slow);
+            }
+        }
+        return 0; // no loop
+    }
+
+    private int countLoopLength(Node node) {
+        int count = 1;
+        Node temp = node.next;
+
+        while (temp != node) {
+            count++;
+            temp = temp.next;
+        }
+        return count;
+    }
+}
