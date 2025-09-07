@@ -1,0 +1,32 @@
+import java.util.PriorityQueue;
+
+class Solution {
+    Node mergeKLists(Node[] arr) {
+        // Min-heap based on node values
+        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.data - b.data);
+
+        // Add the first node of each list to the priority queue
+        for (Node head : arr) {
+            if (head != null) {
+                pq.add(head);
+            }
+        }
+
+        // Dummy node to build the merged list
+        Node dummy = new Node(0);
+        Node tail = dummy;
+
+        // Extract the smallest node and add next node from that list
+        while (!pq.isEmpty()) {
+            Node curr = pq.poll();
+            tail.next = curr;
+            tail = tail.next;
+
+            if (curr.next != null) {
+                pq.add(curr.next);
+            }
+        }
+
+        return dummy.next;
+    }
+}
