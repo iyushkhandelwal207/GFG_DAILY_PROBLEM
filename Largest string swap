@@ -1,0 +1,29 @@
+class Solution {
+    public String largestSwap(String s) {
+        char[] arr = s.toCharArray();
+        int n = arr.length;
+        
+        // Record last occurrence index of each character
+        int[] last = new int[256]; 
+        for (int i = 0; i < n; i++) {
+            last[arr[i]] = i;
+        }
+
+        // Traverse string from left to right
+        for (int i = 0; i < n; i++) {
+            // Try swapping with a bigger char (from 'z' down to arr[i]+1)
+            for (char ch = 'z'; ch > arr[i]; ch--) {
+                if (last[ch] > i) {  // found a bigger char on the right
+                    // Swap
+                    char temp = arr[i];
+                    arr[i] = arr[last[ch]];
+                    arr[last[ch]] = temp;
+                    return new String(arr);
+                }
+            }
+        }
+        
+        // Already largest possible
+        return s;
+    }
+}
