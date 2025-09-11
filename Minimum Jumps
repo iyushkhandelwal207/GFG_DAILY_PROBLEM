@@ -1,0 +1,44 @@
+class Solution {
+    public int minJumps(int[] arr) {
+        int n = arr.length;
+        
+        // If the array has only one element, no jumps are needed
+        if (n <= 1) return 0;
+        
+        // If the first element is 0, we can't move anywhere
+        if (arr[0] == 0) return -1;
+        
+        // maxReach keeps track of the farthest index we can reach
+        int maxReach = arr[0];
+        // steps keeps track of steps we can still take
+        int steps = arr[0];
+        // jumps stores the number of jumps necessary to reach end
+        int jumps = 1;
+        
+        for (int i = 1; i < n; i++) {
+            // Check if we have reached the end
+            if (i == n - 1) return jumps;
+            
+            // Updating maxReach
+            maxReach = Math.max(maxReach, i + arr[i]);
+            
+            // We use a step to get to the current index
+            steps--;
+            
+            // If no steps are left
+            if (steps == 0) {
+                // We must have used a jump
+                jumps++;
+                
+                // Check if current index/position is reachable
+                if (i >= maxReach) return -1;
+                
+                // Reinitialize steps to the amount
+                // of steps to reach maxReach from position i
+                steps = maxReach - i;
+            }
+        }
+        
+        return -1;
+    }
+}
