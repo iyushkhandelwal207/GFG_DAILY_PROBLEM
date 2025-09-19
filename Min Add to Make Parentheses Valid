@@ -1,0 +1,21 @@
+class Solution {
+    public int minParentheses(String s) {
+        int balance = 0;    // counts unmatched '('
+        int insertions = 0; // counts required '(' for unmatched ')'
+
+        for (char c : s.toCharArray()) {
+            if (c == '(') {
+                balance++;
+            } else { // c == ')'
+                if (balance > 0) {
+                    balance--; // match with an existing '('
+                } else {
+                    insertions++; // need an extra '('
+                }
+            }
+        }
+
+        // add remaining unmatched '('
+        return insertions + balance;
+    }
+}
