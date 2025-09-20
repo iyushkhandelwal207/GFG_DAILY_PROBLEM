@@ -1,0 +1,41 @@
+class Solution {
+    public static int longestSubarray(int[] arr) {
+        // code here
+        int n = arr.length;
+        if(n == 0) return 0;
+        int[] leftGreater = new int[n];
+        int[] rightGreater = new int[n];
+        Stack<Integer> st = new Stack<>();
+        for(int i = 0; i < n; i++) {
+            while(!st.isEmpty() && arr[st.peek()] <= arr[i]) {
+                st.pop();
+            }
+            if(st.isEmpty()) {
+                leftGreater[i] = -1;
+            } else {
+                leftGreater[i] = st.peek();
+            }
+            st.push(i);
+        }
+        st.clear();
+        for(int i = n-1; i>= 0; i--) {
+            while(!st.isEmpty() && arr[st.peek()] < arr[i]) {
+                st.pop();
+            }
+            if(st.isEmpty()) {
+                rightGreater[i] = n;
+            } else {
+                rightGreater[i] = st.peek();
+            }
+            st.push(i);
+        }
+        int ans = 0;
+        for(int i = 0; i < n; i++) {
+            int span = rightGreater[i] - leftGreater[i] - 1;
+            if(span >= arr[i]) {
+                ans = Math.max(ans, span);
+            }
+        }
+        return ans;
+    }
+}
