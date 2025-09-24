@@ -1,0 +1,54 @@
+import java.util.*;
+
+class SpecialQueue {
+    private Queue<Integer> q;          // Normal queue
+    private Deque<Integer> minDeque;   // For tracking minimum
+    private Deque<Integer> maxDeque;   // For tracking maximum
+
+    public SpecialQueue() {
+        q = new LinkedList<>();
+        minDeque = new LinkedList<>();
+        maxDeque = new LinkedList<>();
+    }
+
+    public void enqueue(int x) {
+        q.add(x);
+
+        // Maintain minDeque (monotonic increasing)
+        while (!minDeque.isEmpty() && minDeque.peekLast() > x) {
+            minDeque.pollLast();
+        }
+        minDeque.addLast(x);
+
+        // Maintain maxDeque (monotonic decreasing)
+        while (!maxDeque.isEmpty() && maxDeque.peekLast() < x) {
+            maxDeque.pollLast();
+        }
+        maxDeque.addLast(x);
+    }
+
+    public void dequeue() {
+        if (q.isEmpty()) return;
+
+        int front = q.poll();
+
+        if (front == minDeque.peekFirst()) {
+            minDeque.pollFirst();
+        }
+        if (front == maxDeque.peekFirst()) {
+            maxDeque.pollFirst();
+        }
+    }
+
+    public int getFront() {
+        return q.peek(); // Front element of queue
+    }
+
+    public int getMin() {
+        return minDeque.peekFirst(); // Current min
+    }
+
+    public int getMax() {
+        return maxDeque.peekFirst(); // Current max
+    }
+}
