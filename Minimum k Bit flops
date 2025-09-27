@@ -1,0 +1,24 @@
+class Solution {
+    public int kBitFlips(int[] arr, int k) {
+        int n = arr.length;
+        int[] isFlipped = new int[n];  // to track flips starting at each index
+        int flip = 0;                  // current flip parity
+        int ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            // remove effect of flip that ended k steps ago
+            if (i >= k) {
+                flip ^= isFlipped[i - k];
+            }
+
+            // if current effective bit is 0, we must flip here
+            if ((arr[i] ^ flip) == 0) {
+                if (i + k > n) return -1; // can't flip, out of range
+                ans++;
+                flip ^= 1;           // apply new flip
+                isFlipped[i] = 1;    // mark flip starting here
+            }
+        }
+        return ans;
+    }
+}
