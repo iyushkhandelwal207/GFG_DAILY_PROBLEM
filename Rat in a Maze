@@ -1,0 +1,65 @@
+import java.util.*;
+
+class Solution {
+    public ArrayList<String> ratInMaze(int[][] maze) {
+        ArrayList<String> ans = new ArrayList<>();
+        int n = maze.length;
+
+        if (maze[0][0] == 0 || maze[n-1][n-1] == 0)
+            return ans;  // No path possible
+
+        boolean[][] visited = new boolean[n][n];
+        StringBuilder path = new StringBuilder();
+
+        solve(maze, 0, 0, visited, path, ans, n);
+
+        Collections.sort(ans); // Lexicographic order
+        return ans;
+    }
+
+    private void solve(int[][] maze, int i, int j, boolean[][] visited, StringBuilder path, ArrayList<String> ans, int n) {
+        // Base case: reached destination
+        if (i == n - 1 && j == n - 1) {
+            ans.add(path.toString());
+            return;
+        }
+
+        // Mark as visited
+        visited[i][j] = true;
+
+        // Move Down
+        if (isSafe(maze, i + 1, j, visited, n)) {
+            path.append('D');
+            solve(maze, i + 1, j, visited, path, ans, n);
+            path.deleteCharAt(path.length() - 1);
+        }
+
+        // Move Left
+        if (isSafe(maze, i, j - 1, visited, n)) {
+            path.append('L');
+            solve(maze, i, j - 1, visited, path, ans, n);
+            path.deleteCharAt(path.length() - 1);
+        }
+
+        // Move Right
+        if (isSafe(maze, i, j + 1, visited, n)) {
+            path.append('R');
+            solve(maze, i, j + 1, visited, path, ans, n);
+            path.deleteCharAt(path.length() - 1);
+        }
+
+        // Move Up
+        if (isSafe(maze, i - 1, j, visited, n)) {
+            path.append('U');
+            solve(maze, i - 1, j, visited, path, ans, n);
+            path.deleteCharAt(path.length() - 1);
+        }
+
+        // Backtrack
+        visited[i][j] = false;
+    }
+
+    private boolean isSafe(int[][] maze, int i, int j, boolean[][] visited, int n) {
+        return (i >= 0 && i < n && j >= 0 && j < n && maze[i][j] == 1 && !visited[i][j]);
+    }
+}
