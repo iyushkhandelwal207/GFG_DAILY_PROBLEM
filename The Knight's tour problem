@@ -1,0 +1,81 @@
+import java.util.*;
+
+class Solution {
+    
+    // Your checker logic (unchanged)
+    public boolean checker(int[][] grid, int r, int c, int n, int expval) {
+        if (r < 0 || c < 0 || r >= n || c >= n || grid[r][c] != expval) {
+            return false;
+        }
+        if (expval == (n * n) - 1) {
+            return true;
+        }
+
+        boolean ans1 = checker(grid, r - 2, c + 1, n, expval + 1);
+        boolean ans2 = checker(grid, r - 1, c + 2, n, expval + 1);
+        boolean ans3 = checker(grid, r + 1, c + 2, n, expval + 1);
+        boolean ans4 = checker(grid, r + 2, c + 1, n, expval + 1);
+        boolean ans5 = checker(grid, r + 2, c - 1, n, expval + 1);
+        boolean ans6 = checker(grid, r + 1, c - 2, n, expval + 1);
+        boolean ans7 = checker(grid, r - 1, c - 2, n, expval + 1);
+        boolean ans8 = checker(grid, r - 2, c - 1, n, expval + 1);
+
+        return ans1 || ans2 || ans3 || ans4 || ans5 || ans6 || ans7 || ans8;
+    }
+
+    // Function to generate a valid knight tour using backtracking
+    private boolean generateTour(int[][] grid, int r, int c, int move, int n) {
+        if (move == n * n) return true;
+
+        int[] dr = {-2, -1, 1, 2, 2, 1, -1, -2};
+        int[] dc = {1, 2, 2, 1, -1, -2, -2, -1};
+
+        for (int k = 0; k < 8; k++) {
+            int nr = r + dr[k];
+            int nc = c + dc[k];
+            if (nr >= 0 && nc >= 0 && nr < n && nc < n && grid[nr][nc] == -1) {
+                grid[nr][nc] = move;
+                if (generateTour(grid, nr, nc, move + 1, n)) return true;
+                grid[nr][nc] = -1; // backtrack
+            }
+        }
+        return false;
+    }
+
+    public ArrayList<ArrayList<Integer>> knightTour(int n) {
+        int[][] grid = new int[n][n];
+
+        // initialize board with -1
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                grid[i][j] = -1;
+            }
+        }
+
+        // start from (0,0)
+        grid[0][0] = 0;
+
+        // generate knight’s tour
+        boolean possible = generateTour(grid, 0, 0, 1, n);
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+
+        if (!possible) {
+            // no valid tour (like for n = 4)
+            return result; // empty list
+        }
+
+        // verify with your checker function
+        boolean valid = checker(grid, 0, 0, n, 0);
+        if (valid) {
+            for (int i = 0; i < n; i++) {
+                ArrayList<Integer> row = new ArrayList<>();
+                for (int j = 0; j < n; j++) {
+                    row.add(grid[i][j]);
+                }
+                result.add(row);
+            }
+        }
+
+        return result;
+    }
+}
