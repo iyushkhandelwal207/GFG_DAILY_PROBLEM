@@ -1,0 +1,52 @@
+/*
+class Node {
+    int data;
+    Node left, right;
+
+    Node(int data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+*/
+
+import java.util.HashMap;
+
+class Solution {
+    // Function to return the maximum sum of non-adjacent nodes.
+    public int getMaxSum(Node root) {
+        // Use memoization to avoid recomputation
+        HashMap<Node, Integer> dp = new HashMap<>();
+        return helper(root, dp);
+    }
+
+    private int helper(Node node, HashMap<Node, Integer> dp) {
+        if (node == null) return 0;
+
+        // If already computed, return stored value
+        if (dp.containsKey(node)) return dp.get(node);
+
+        // Include current node
+        int include = node.data;
+        if (node.left != null) {
+            include += helper(node.left.left, dp);
+            include += helper(node.left.right, dp);
+        }
+        if (node.right != null) {
+            include += helper(node.right.left, dp);
+            include += helper(node.right.right, dp);
+        }
+
+        // Exclude current node
+        int exclude = helper(node.left, dp) + helper(node.right, dp);
+
+        // Choose the maximum
+        int result = Math.max(include, exclude);
+
+        // Store result in dp
+        dp.put(node, result);
+
+        return result;
+    }
+}
