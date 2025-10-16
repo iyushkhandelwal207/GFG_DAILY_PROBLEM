@@ -1,0 +1,28 @@
+class Solution {
+    Node removekeys(Node root, int l, int r) {
+        // Base case
+        if (root == null)
+            return null;
+
+        // First, recursively fix the left and right subtrees
+        root.left = removekeys(root.left, l, r);
+        root.right = removekeys(root.right, l, r);
+
+        // Now, fix the current node
+
+        // If the current node's data is less than l,
+        // then we can safely discard the left subtree
+        // because all values there will also be < l.
+        if (root.data < l)
+            return root.right;
+
+        // If the current node's data is greater than r,
+        // then discard the right subtree
+        // because all values there will be > r.
+        if (root.data > r)
+            return root.left;
+
+        // Otherwise, the current node is within range
+        return root;
+    }
+}
