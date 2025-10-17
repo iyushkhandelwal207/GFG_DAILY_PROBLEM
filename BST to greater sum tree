@@ -1,0 +1,27 @@
+class Solution {
+    static int sum = 0;  // global variable to store running sum
+
+    public static void transformTree(Node root) {
+        sum = 0;
+        transform(root);
+    }
+
+    private static void transform(Node root) {
+        if (root == null) return;
+
+        // Traverse right subtree first (greater values)
+        transform(root.right);
+
+        // Store original value before modifying
+        int original = root.data;
+
+        // Replace current node's value with the sum of greater nodes
+        root.data = sum;
+
+        // Update sum (include original node value)
+        sum += original;
+
+        // Traverse left subtree (smaller values)
+        transform(root.left);
+    }
+}
