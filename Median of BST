@@ -1,0 +1,54 @@
+/*
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+*/
+
+class Solution {
+    // Function to count total number of nodes in BST
+    int countNodes(Node root) {
+        if (root == null) return 0;
+        return 1 + countNodes(root.left) + countNodes(root.right);
+    }
+
+    // Helper function to find median using inorder traversal
+    int findMedianUtil(Node root, int[] count, int target) {
+        if (root == null) return -1;
+
+        // Check in left subtree
+        int val = findMedianUtil(root.left, count, target);
+        if (val != -1) return val;
+
+        // Visit current node
+        count[0]++;
+        if (count[0] == target)
+            return root.data;
+
+        // Check in right subtree
+        return findMedianUtil(root.right, count, target);
+    }
+
+    public int findMedian(Node root) {
+        if (root == null) return 0;
+
+        int n = countNodes(root);
+        int target;
+
+        // if even → n/2 ; if odd → (n+1)/2
+        if (n % 2 == 0)
+            target = n / 2;
+        else
+            target = (n + 1) / 2;
+
+        int[] count = new int[1];
+        return findMedianUtil(root, count, target);
+    }
+}
