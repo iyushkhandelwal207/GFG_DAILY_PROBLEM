@@ -1,0 +1,56 @@
+/*
+class Node {
+    int data;
+    Node left;
+    Node right;
+
+    Node(int data) {
+        this.data = data;
+        left = null;
+        right = null;
+    }
+}
+*/
+
+import java.util.*;
+
+class Solution {
+    public ArrayList<Integer> getKClosest(Node root, int target, int k) {
+        // Step 1: Perform inorder traversal to get sorted elements
+        ArrayList<Integer> inorderList = new ArrayList<>();
+        inorderTraversal(root, inorderList);
+
+        // Step 2: Use a priority queue (max heap) based on absolute difference
+        PriorityQueue<int[]> maxHeap = new PriorityQueue<>(
+            (a, b) -> {
+                if (a[0] == b[0]) return b[1] - a[1]; // if same diff, prefer smaller value
+                return b[0] - a[0]; // larger diff first
+            }
+        );
+
+        // Step 3: Process each element
+        for (int val : inorderList) {
+            int diff = Math.abs(val - target);
+            maxHeap.offer(new int[]{diff, val});
+            
+            if (maxHeap.size() > k)
+                maxHeap.poll(); // remove farthest element
+        }
+
+        // Step 4: Extract results
+        ArrayList<Integer> result = new ArrayList<>();
+        while (!maxHeap.isEmpty()) {
+            result.add(maxHeap.poll()[1]);
+        }
+
+        return result; // order doesn’t matter, driver will sort
+    }
+
+    // Helper function for inorder traversal
+    private void inorderTraversal(Node root, ArrayList<Integer> list) {
+        if (root == null) return;
+        inorderTraversal(root.left, list);
+        list.add(root.data);
+        inorderTraversal(root.right, list);
+    }
+}
