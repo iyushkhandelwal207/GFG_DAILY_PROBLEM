@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    public ArrayList<ArrayList<Integer>> kClosest(int[][] points, int k) {
+        // Max Heap -> store point with comparator based on distance from origin (descending)
+        PriorityQueue<int[]> pq = new PriorityQueue<>(
+            (a, b) -> ((b[0]*b[0] + b[1]*b[1]) - (a[0]*a[0] + a[1]*a[1]))
+        );
+
+        // Add points to the heap
+        for (int[] p : points) {
+            pq.offer(p);
+            if (pq.size() > k) {
+                pq.poll(); // remove farthest point
+            }
+        }
+
+        // Prepare result list
+        ArrayList<ArrayList<Integer>> ans = new ArrayList<>();
+        while (!pq.isEmpty()) {
+            int[] p = pq.poll();
+            ArrayList<Integer> temp = new ArrayList<>();
+            temp.add(p[0]);
+            temp.add(p[1]);
+            ans.add(temp);
+        }
+
+        return ans;
+    }
+}
