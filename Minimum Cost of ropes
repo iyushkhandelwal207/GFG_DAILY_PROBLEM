@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+    public static int minCost(int[] arr) {
+        // Edge case: if only one rope, no cost
+        if (arr.length <= 1) return 0;
+
+        // Min-heap to store rope lengths
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        
+        // Add all ropes to heap
+        for (int rope : arr) {
+            pq.add(rope);
+        }
+
+        int totalCost = 0;
+
+        // Keep combining two smallest ropes until one remains
+        while (pq.size() > 1) {
+            int first = pq.poll();   // smallest
+            int second = pq.poll();  // second smallest
+
+            int cost = first + second;
+            totalCost += cost;
+
+            pq.add(cost);  // add the new rope back
+        }
+
+        return totalCost;
+    }
+}
