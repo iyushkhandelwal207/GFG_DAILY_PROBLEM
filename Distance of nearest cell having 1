@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    public ArrayList<ArrayList<Integer>> nearest(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        
+        ArrayList<ArrayList<Integer>> dist = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            ArrayList<Integer> row = new ArrayList<>(Collections.nCopies(m, -1));
+            dist.add(row);
+        }
+
+        Queue<int[]> q = new LinkedList<>();
+
+        // Step 1: Add all cells having 1 to the queue with distance 0
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
+                    dist.get(i).set(j, 0);
+                    q.add(new int[]{i, j});
+                }
+            }
+        }
+
+        // Step 2: Define directions (up, down, left, right)
+        int[] dx = {-1, 1, 0, 0};
+        int[] dy = {0, 0, -1, 1};
+
+        // Step 3: BFS traversal
+        while (!q.isEmpty()) {
+            int[] cell = q.poll();
+            int x = cell[0], y = cell[1];
+
+            for (int dir = 0; dir < 4; dir++) {
+                int nx = x + dx[dir];
+                int ny = y + dy[dir];
+
+                if (nx >= 0 && ny >= 0 && nx < n && ny < m && dist.get(nx).get(ny) == -1) {
+                    dist.get(nx).set(ny, dist.get(x).get(y) + 1);
+                    q.add(new int[]{nx, ny});
+                }
+            }
+        }
+
+        return dist;
+    }
+}
