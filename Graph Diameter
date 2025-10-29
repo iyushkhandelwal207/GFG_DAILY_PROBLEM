@@ -1,0 +1,49 @@
+import java.util.*;
+
+class Solution {
+    public int diameter(int V, int[][] edges) {
+        // Step 1: Build adjacency list
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
+        for (int[] e : edges) {
+            adj.get(e[0]).add(e[1]);
+            adj.get(e[1]).add(e[0]);
+        }
+
+        // Step 2: First BFS from any node (say 0)
+        int farthestNode = bfs(0, adj, V)[0];
+        
+        // Step 3: Second BFS from the farthest node found
+        int diameter = bfs(farthestNode, adj, V)[1];
+        
+        return diameter;
+    }
+
+    private int[] bfs(int start, List<List<Integer>> adj, int V) {
+        boolean[] visited = new boolean[V];
+        Queue<int[]> q = new LinkedList<>(); // {node, distance}
+        q.offer(new int[]{start, 0});
+        visited[start] = true;
+
+        int farthestNode = start;
+        int maxDist = 0;
+
+        while (!q.isEmpty()) {
+            int[] curr = q.poll();
+            int node = curr[0], dist = curr[1];
+
+            if (dist > maxDist) {
+                maxDist = dist;
+                farthestNode = node;
+            }
+
+            for (int nei : adj.get(node)) {
+                if (!visited[nei]) {
+                    visited[nei] = true;
+                    q.offer(new int[]{nei, dist + 1});
+                }
+            }
+        }
+        return new int[]{farthestNode, maxDist};
+    }
+}
