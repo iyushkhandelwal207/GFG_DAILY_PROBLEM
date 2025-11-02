@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Solution {
+    public int maxEdgesToAdd(int V, int[][] edges) {
+        // Step 1: Build adjacency list
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) adj.add(new ArrayList<>());
+        for (int[] e : edges) adj.get(e[0]).add(e[1]);
+        
+        // Step 2: Compute indegree for Kahn’s algorithm
+        int[] indegree = new int[V];
+        for (int[] e : edges) indegree[e[1]]++;
+        
+        // Step 3: Kahn’s algorithm for Topological Sort
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < V; i++)
+            if (indegree[i] == 0)
+                q.add(i);
+        
+        List<Integer> topo = new ArrayList<>();
+        while (!q.isEmpty()) {
+            int node = q.poll();
+            topo.add(node);
+            for (int nei : adj.get(node)) {
+                indegree[nei]--;
+                if (indegree[nei] == 0)
+                    q.add(nei);
+            }
+        }
+
+        // Step 4: Create position map for quick lookup
+        int[] pos = new int[V];
+        for (int i = 0; i < V; i++)
+            pos[topo.get(i)] = i;
+
+        // Step 5: Build reachability matrix
+        boolean[][] connected = new boolean[V][V];
+        for (int[] e : edges)
+            connected[e[0]][e[1]] = true;
+
+        // Step 6: Count missing forward edges
+        int count = 0;
+        for (int i = 0; i < V; i++) {
+            for (int j = i + 1; j < V; j++) {
+                int u = topo.get(i), v = topo.get(j);
+                if (!connected[u][v]) count++;
+            }
+        }
+
+        return count;
+    }
+}
