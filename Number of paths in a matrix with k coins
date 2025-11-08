@@ -1,0 +1,29 @@
+class Solution {
+    public int numberOfPath(int[][] mat, int k) {
+        int n = mat.length;
+        int m = mat[0].length;
+        Integer[][][] dp = new Integer[n][m][k + 1];  // 3D DP for memoization
+        return helper(mat, 0, 0, k, dp);
+    }
+
+    private int helper(int[][] mat, int i, int j, int k, Integer[][][] dp) {
+        // Base case: out of bounds or invalid k
+        if (i >= mat.length || j >= mat[0].length || k < 0) return 0;
+
+        // If we reached bottom-right cell
+        if (i == mat.length - 1 && j == mat[0].length - 1)
+            return (k == mat[i][j]) ? 1 : 0;
+
+        // Check if result already computed
+        if (dp[i][j][k] != null) return dp[i][j][k];
+
+        // Move right and down
+        int remaining = k - mat[i][j];
+        int right = helper(mat, i, j + 1, remaining, dp);
+        int down = helper(mat, i + 1, j, remaining, dp);
+
+        // Store and return result
+        dp[i][j][k] = right + down;
+        return dp[i][j][k];
+    }
+}
