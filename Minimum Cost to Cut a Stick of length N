@@ -1,0 +1,38 @@
+class Solution {
+    public int minCutCost(int n, int[] cuts) {
+        int m = cuts.length;
+        
+        // Step 1: Create new array with boundaries 0 and n
+        int[] c = new int[m + 2];
+        c[0] = 0;
+        c[m + 1] = n;
+        
+        for (int i = 0; i < m; i++) {
+            c[i + 1] = cuts[i];
+        }
+        
+        // Step 2: Sort
+        java.util.Arrays.sort(c);
+        
+        // Step 3: DP array
+        int[][] dp = new int[m + 2][m + 2];
+        
+        // Step 4: Length-based DP
+        for (int len = 2; len < m + 2; len++) {
+            for (int i = 0; i + len < m + 2; i++) {
+                int j = i + len;
+                
+                dp[i][j] = Integer.MAX_VALUE;
+                
+                for (int k = i + 1; k < j; k++) {
+                    int cost = dp[i][k] + dp[k][j] + (c[j] - c[i]);
+                    dp[i][j] = Math.min(dp[i][j], cost);
+                }
+                
+                if (dp[i][j] == Integer.MAX_VALUE) dp[i][j] = 0;
+            }
+        }
+        
+        return dp[0][m + 1];
+    }
+}
