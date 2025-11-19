@@ -1,0 +1,58 @@
+class Solution {
+
+    static class Pair {
+        int effort, x, y;
+        Pair(int e, int x, int y) {
+            this.effort = e;
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    public int minCostPath(int[][] mat) {
+        int n = mat.length;
+        int m = mat[0].length;
+
+        int[][] dist = new int[n][m];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < m; j++)
+                dist[i][j] = Integer.MAX_VALUE;
+
+        dist[0][0] = 0;
+
+        int[] dx = {1, -1, 0, 0};
+        int[] dy = {0, 0, 1, -1};
+
+        PriorityQueue<Pair> pq = new PriorityQueue<>(
+            (a, b) -> a.effort - b.effort
+        );
+        pq.add(new Pair(0, 0, 0));
+
+        while (!pq.isEmpty()) {
+            Pair p = pq.poll();
+            int effort = p.effort;
+            int x = p.x;
+            int y = p.y;
+
+            if (x == n - 1 && y == m - 1)
+                return effort;
+
+            for (int k = 0; k < 4; k++) {
+                int nx = x + dx[k];
+                int ny = y + dy[k];
+
+                if (nx >= 0 && ny >= 0 && nx < n && ny < m) {
+                    int diff = Math.abs(mat[nx][ny] - mat[x][y]);
+                    int newEffort = Math.max(effort, diff);
+
+                    if (newEffort < dist[nx][ny]) {
+                        dist[nx][ny] = newEffort;
+                        pq.add(new Pair(newEffort, nx, ny));
+                    }
+                }
+            }
+        }
+
+        return 0;
+    }
+}
