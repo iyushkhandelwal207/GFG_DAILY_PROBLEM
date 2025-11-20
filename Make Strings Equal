@@ -1,0 +1,67 @@
+class Solution {
+
+    public int minCost(String s, String t, char[][] transform, int[] cost) {
+
+        int n = s.length();
+
+        // Cost matrix for 26 letters
+        final int INF = (int)1e15;
+        long[][] dist = new long[26][26];
+
+        // Initialize distance matrix
+        for (int i = 0; i < 26; i++) {
+            for (int j = 0; j < 26; j++) {
+                dist[i][j] = (i == j) ? 0 : INF;
+            }
+        }
+
+        // Load direct transformations
+        for (int i = 0; i < transform.length; i++) {
+            int x = transform[i][0] - 'a';
+            int y = transform[i][1] - 'a';
+            dist[x][y] = Math.min(dist[x][y], cost[i]);  // keep the minimum cost
+        }
+
+        // Floyd–Warshall on 26x26 mat
+        for (int k = 0; k < 26; k++) {
+            for (int i = 0; i < 26; i++) {
+                for (int j = 0; j < 26; j++) {
+                    if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                    }
+                }
+            }
+        }
+
+        long totalCost = 0;
+
+        // Now compare characters one by one
+        for (int i = 0; i < n; i++) {
+            char a = s.charAt(i);
+            char b = t.charAt(i);
+
+            if (a == b) continue;
+
+            int u = a - 'a';
+            int v = b - 'a';
+
+            long best = INF;
+
+            // Try converting both chars to some common character c
+            for (int c = 0; c < 26; c++) {
+                long cu = dist[u][c];
+                long cv = dist[v][c];
+
+                if (cu == INF || cv == INF) continue;
+
+                best = Math.min(best, cu + cv);
+            }
+
+            if (best == INF) return -1;  // impossible
+
+            totalCost += best;
+        }
+
+        return (int) totalCost;
+    }
+}
