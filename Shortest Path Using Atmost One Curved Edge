@@ -1,0 +1,73 @@
+import java.util.*;
+
+class Solution {
+    static class Pair {
+        int node;
+        int weight;
+        Pair(int n, int w) {
+            node = n;
+            weight = w;
+        }
+    }
+
+    int[] dijkstra(int src, int V, List<List<Pair>> graph) {
+        int[] dist = new int[V];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> a.weight - b.weight);
+        dist[src] = 0;
+        pq.add(new Pair(src, 0));
+
+        while (!pq.isEmpty()) {
+            Pair top = pq.poll();
+            int u = top.node;
+            int d = top.weight;
+
+            if (d > dist[u]) continue;
+
+            for (Pair p : graph.get(u)) {
+                int v = p.node;
+                int w = p.weight;
+
+                if (dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    pq.add(new Pair(v, dist[v]));
+                }
+            }
+        }
+        return dist;
+    }
+
+    public int shortestPath(int V, int a, int b, int[][] edges) {
+        List<List<Pair>> graph = new ArrayList<>();
+        for (int i = 0; i < V; i++) graph.add(new ArrayList<>());
+
+        // Build graph with only straight edges (w1)
+        for (int[] e : edges) {
+            int u = e[0], v = e[1], w1 = e[2];
+            graph.get(u).add(new Pair(v, w1));
+            graph.get(v).add(new Pair(u, w1));
+        }
+
+        // Dijkstra from a and b
+        int[] distA = dijkstra(a, V, graph);
+        int[] distB = dijkstra(b, V, graph);
+
+        int ans = distA[b]; // path without curved edge
+
+        // Try using EXACTLY one curved edge
+        for (int[] e : edges) {
+            int u = e[0], v = e[1], w2 = e[3];
+
+            if (distA[u] != Integer.MAX_VALUE && distB[v] != Integer.MAX_VALUE) {
+                ans = Math.min(ans, distA[u] + w2 + distB[v]);
+            }
+
+            if (distA[v] != Integer.MAX_VALUE && distB[u] != Integer.MAX_VALUE) {
+                ans = Math.min(ans, distA[v] + w2 + distB[u]);
+            }
+        }
+
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+}
