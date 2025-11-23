@@ -1,0 +1,72 @@
+import java.util.*;
+
+class Solution {
+
+    class DSU {
+        int parent[], rank[];
+
+        DSU(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++) parent[i] = i;
+        }
+
+        int find(int x) {
+            if (parent[x] != x)
+                parent[x] = find(parent[x]);
+            return parent[x];
+        }
+
+        void union(int x, int y) {
+            int rx = find(x);
+            int ry = find(y);
+            if (rx == ry) return;
+
+            if (rank[rx] < rank[ry])
+                parent[rx] = ry;
+            else if (rank[rx] > rank[ry])
+                parent[ry] = rx;
+            else {
+                parent[ry] = rx;
+                rank[rx]++;
+            }
+        }
+    }
+
+    int maxRemove(int[][] stones) {
+
+        int n = stones.length;
+        int maxRow = 0, maxCol = 0;
+
+        for (int[] s : stones) {
+            maxRow = Math.max(maxRow, s[0]);
+            maxCol = Math.max(maxCol, s[1]);
+        }
+
+        // DSU size = rows + columns + 1
+        DSU dsu = new DSU(maxRow + maxCol + 2);
+
+        // Mapping: row = r
+        // column = maxRow + 1 + c
+        Set<Integer> used = new HashSet<>();
+
+        for (int[] s : stones) {
+            int r = s[0];
+            int c = s[1] + maxRow + 1;
+
+            dsu.union(r, c);
+            used.add(r);
+            used.add(c);
+        }
+
+        // Count number of connected components
+        int comp = 0;
+        for (int node : used) {
+            if (dsu.find(node) == node)
+                comp++;
+        }
+
+        // Maximum removable stones
+        return n - comp;
+    }
+}
