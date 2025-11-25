@@ -1,0 +1,94 @@
+class Solution {
+
+    // ---------- DSU (Disjoint Set Union) ----------
+    class DSU {
+        int[] parent, rank;
+
+        DSU(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++)
+                parent[i] = i;
+        }
+
+        int find(int x) {
+            if (x == parent[x]) return x;
+            return parent[x] = find(parent[x]);
+        }
+
+        boolean union(int a, int b) {
+            a = find(a);
+            b = find(b);
+            if (a == b) return false;
+
+            if (rank[a] < rank[b]) parent[a] = b;
+            else if (rank[b] < rank[a]) parent[b] = a;
+            else {
+                parent[b] = a;
+                rank[a]++;
+            }
+            return true;
+        }
+    }
+
+    // -----------------------------------------------------
+
+    public int secondMST(int V, int[][] edges) {
+
+        // Sort edges by weight
+        Arrays.sort(edges, (a, b) -> a[2] - b[2]);
+
+        DSU dsu = new DSU(V);
+
+        int mstWeight = 0;
+        List<int[]> mstEdges = new ArrayList<>();
+
+        // ---------- Build initial MST ----------
+        for (int[] e : edges) {
+            if (dsu.union(e[0], e[1])) {
+                mstWeight += e[2];
+                mstEdges.add(e);
+            }
+        }
+
+        // Check if MST is valid
+        if (mstEdges.size() != V - 1) return -1;
+
+        int secondBest = Integer.MAX_VALUE;
+
+        // ---------- Try removing each MST edge ----------
+        for (int[] removedEdge : mstEdges) {
+
+            DSU dsu2 = new DSU(V);
+            int weight = 0;
+            int cnt = 0;
+
+            // Add MST edges except removedEdge
+            for (int[] e : mstEdges) {
+                if (e == removedEdge) continue;
+                if (dsu2.union(e[0], e[1])) {
+                    weight += e[2];
+                    cnt++;
+                }
+            }
+
+            // Add remaining original edges
+            for (int[] e : edges) {
+                if (e == removedEdge) continue;
+
+                if (dsu2.union(e[0], e[1])) {
+                    weight += e[2];
+                    cnt++;
+                }
+                if (cnt == V - 1) break;
+            }
+
+            // If valid spanning tree formed
+            if (cnt == V - 1 && weight > mstWeight) {
+                secondBest = Math.min(secondBest, weight);
+            }
+        }
+
+        return (secondBest == Integer.MAX_VALUE) ? -1 : secondBest;
+    }
+}
