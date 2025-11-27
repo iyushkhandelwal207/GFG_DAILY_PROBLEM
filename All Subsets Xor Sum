@@ -1,0 +1,14 @@
+class Solution {
+    int subsetXORSum(int arr[]) {
+        int OR = 0;
+        int n = arr.length;
+
+        // Step 1: Compute OR of all elements
+        for (int x : arr) {
+            OR |= x;
+        }
+
+        // Step 2: Multiply with 2^(n-1)
+        return OR * (1 << (n - 1));
+    }
+}
