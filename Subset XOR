@@ -1,0 +1,29 @@
+class Solution {
+    public static ArrayList<Integer> subsetXOR(int n) {
+        ArrayList<Integer> ans = new ArrayList<>();
+
+        if (n == 1) {
+            ans.add(1);
+            return ans;
+        }
+
+        // Compute XOR of 1..n
+        int totalXor = 0;
+        for (int i = 1; i <= n; i++) totalXor ^= i;
+
+        // If XOR is already n → take all
+        if (totalXor == n) {
+            for (int i = 1; i <= n; i++) ans.add(i);
+            return ans;
+        }
+
+        // Otherwise remove exactly one element
+        int remove = totalXor ^ n;
+
+        for (int i = 1; i <= n; i++) {
+            if (i != remove) ans.add(i);
+        }
+
+        return ans;
+    }
+}
