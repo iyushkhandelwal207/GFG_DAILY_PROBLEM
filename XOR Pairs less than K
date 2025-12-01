@@ -1,0 +1,61 @@
+class Solution {
+
+    // Trie node
+    class Node {
+        Node[] child = new Node[2];
+        int count = 0;  // number of elements passing through this node
+    }
+
+    Node root = new Node();
+
+    // Insert number into trie
+    void insert(int x) {
+        Node curr = root;
+        for (int i = 15; i >= 0; i--) {   // 16 bits enough (values <= 50000)
+            int bit = (x >> i) & 1;
+            if (curr.child[bit] == null)
+                curr.child[bit] = new Node();
+            curr = curr.child[bit];
+            curr.count++;
+        }
+    }
+
+    // Count how many numbers already in trie give (num ^ x) < k
+    int countLess(int x, int k) {
+        Node curr = root;
+        int ans = 0;
+
+        for (int i = 15; i >= 0; i--) {
+            if (curr == null) break;
+
+            int xb = (x >> i) & 1;
+            int kb = (k >> i) & 1;
+
+            if (kb == 1) {
+                // If k bit = 1
+                // Option 1: take same-bit branch => XOR bit becomes 0 (<1)
+                if (curr.child[xb] != null)
+                    ans += curr.child[xb].count;
+
+                // Option 2: move to opposite bit for further checking
+                curr = curr.child[xb ^ 1];
+
+            } else {
+                // If k bit = 0
+                // XOR bit must be 0 → go to same bit only
+                curr = curr.child[xb];
+            }
+        }
+        return ans;
+    }
+
+    public int cntPairs(int[] arr, int k) {
+        int cnt = 0;
+
+        for (int x : arr) {
+            cnt += countLess(x, k);
+            insert(x);
+        }
+        return cnt;
+    }
+}
