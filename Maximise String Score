@@ -1,0 +1,83 @@
+import java.util.*;
+
+class Solution {
+    public int maxScore(String s, char[][] jumps) {
+
+        int n = s.length();
+        char[] a = s.toCharArray();
+
+        // jump allowed matrix
+        boolean[][] allow = new boolean[26][26];
+        for (char[] jp : jumps) {
+            allow[jp[0] - 'a'][jp[1] - 'a'] = true;
+        }
+
+        // prefix ASCII sum
+        long[] pref = new long[n];
+        pref[0] = a[0];
+        for (int i = 1; i < n; i++) {
+            pref[i] = pref[i - 1] + a[i];
+        }
+
+        // prefix per-character sums
+        long[][] prefChar = new long[26][n];
+        prefChar[a[0] - 'a'][0] = a[0];
+
+        for (int i = 1; i < n; i++) {
+            int c = a[i] - 'a';
+            for (int k = 0; k < 26; k++) {
+                prefChar[k][i] = prefChar[k][i - 1];
+            }
+            prefChar[c][i] += a[i];
+        }
+
+        // build next occurrence table
+        int[][] nextPos = new int[26][n + 1];
+        for (int c = 0; c < 26; c++) {
+            Arrays.fill(nextPos[c], -1);
+        }
+
+        int[] last = new int[26];
+        Arrays.fill(last, -1);
+
+        for (int i = n - 1; i >= 0; i--) {
+            last[a[i] - 'a'] = i;
+            for (int c = 0; c < 26; c++) nextPos[c][i] = last[c];
+        }
+
+        long[] dp = new long[n];
+        Arrays.fill(dp, Long.MIN_VALUE / 3);
+        dp[0] = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (dp[i] < 0) continue;
+
+            int cur = a[i] - 'a';
+
+            // 1. same-character next jump
+            int same = nextPos[cur][i + 1];
+            if (same != -1)
+                dp[same] = Math.max(dp[same], dp[i] + score(i, same, pref, prefChar, a));
+
+            // 2. allowed jumps to next valid target char
+            for (int to = 0; to < 26; to++) {
+                if (!allow[cur][to]) continue;
+
+                int nxt = nextPos[to][i + 1];
+                if (nxt != -1)
+                    dp[nxt] = Math.max(dp[nxt], dp[i] + score(i, nxt, pref, prefChar, a));
+            }
+        }
+
+        long ans = 0;
+        for (long v : dp) ans = Math.max(ans, v);
+        return (int) ans;
+    }
+
+    private long score(int i, int j, long[] pref, long[][] prefChar, char[] a) {
+        long total = pref[j - 1] - (i > 0 ? pref[i - 1] : 0);
+        int c = a[j] - 'a';
+        long remove = prefChar[c][j - 1] - (i > 0 ? prefChar[c][i - 1] : 0);
+        return total - remove;
+    }
+}
