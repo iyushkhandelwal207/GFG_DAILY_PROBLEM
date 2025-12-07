@@ -1,0 +1,24 @@
+class Solution {
+    static final int MOD = 1000000007;
+
+    int distinctSubseq(String str) {
+        int n = str.length();
+        long dp = 1;  // dp for previous char
+        long[] last = new long[26]; // last contribution of each character
+
+        for (char ch : str.toCharArray()) {
+            int idx = ch - 'a';
+
+            long newDp = (dp * 2) % MOD;   // double subsequences
+
+            if (last[idx] != 0) {
+                newDp = (newDp - last[idx] + MOD) % MOD; // remove duplicates
+            }
+
+            last[idx] = dp;   // store previous dp for this character
+            dp = newDp;       // update dp
+        }
+
+        return (int) dp;
+    }
+}
