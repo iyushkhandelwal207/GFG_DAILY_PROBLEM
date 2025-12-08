@@ -1,0 +1,37 @@
+class Solution {
+    public String matrixChainOrder(int arr[]) {
+        int n = arr.length;
+        int dp[][] = new int[n][n];
+        int split[][] = new int[n][n];
+
+        // DP for cost
+        for (int len = 2; len < n; len++) {
+            for (int i = 1; i < n - len + 1; i++) {
+                int j = i + len - 1;
+                dp[i][j] = Integer.MAX_VALUE;
+
+                for (int k = i; k < j; k++) {
+                    int cost = dp[i][k] + dp[k + 1][j] + arr[i - 1] * arr[k] * arr[j];
+                    if (cost < dp[i][j]) {
+                        dp[i][j] = cost;
+                        split[i][j] = k;
+                    }
+                }
+            }
+        }
+
+        // Build bracketed string
+        return buildString(1, n - 1, split);
+    }
+
+    // Recursively generate string
+    private String buildString(int i, int j, int split[][]) {
+        if (i == j) {
+            // 'A' for matrix 1, 'B' for matrix 2, ...
+            return String.valueOf((char) ('A' + i - 1));
+        }
+
+        int k = split[i][j];
+        return "(" + buildString(i, k, split) + buildString(k + 1, j, split) + ")";
+    }
+}
