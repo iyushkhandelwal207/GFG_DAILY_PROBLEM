@@ -1,0 +1,28 @@
+class Solution {
+    ArrayList<Integer> findTwoElement(int arr[]) {
+        int n = arr.length;
+
+        long sumN = (long)n * (n + 1) / 2;           // sum of 1..n
+        long sumSqN = (long)n * (n + 1) * (2*n + 1) / 6;  // sum of squares of 1..n
+
+        long sum = 0, sumSq = 0;
+
+        for(int x : arr){
+            sum += x;
+            sumSq += (long)x * x;
+        }
+
+        long diff = sum - sumN;                // R - M
+        long diffSq = sumSq - sumSqN;          // R^2 - M^2
+
+        long RplusM = diffSq / diff;           // (R - M)(R + M) / (R - M) = R + M
+
+        long R = (diff + RplusM) / 2;          // repeating
+        long M = R - diff;                     // missing
+
+        ArrayList<Integer> ans = new ArrayList<>();
+        ans.add((int)R);
+        ans.add((int)M);
+        return ans;
+    }
+}
