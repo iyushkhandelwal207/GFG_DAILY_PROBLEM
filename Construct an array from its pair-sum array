@@ -1,0 +1,45 @@
+class Solution {
+    public ArrayList<Integer> constructArr(int[] arr) {
+        int m = arr.length;
+
+        // If only one pair sum, original array size is 2
+        if (m == 1) {
+            ArrayList<Integer> ans = new ArrayList<>();
+            ans.add(1);
+            ans.add(arr[0] - 1);
+            return ans;
+        }
+
+        // Calculate n from n*(n-1)/2 = m
+        int n = (int)( (1 + Math.sqrt(1 + 8*m)) / 2 );
+
+        ArrayList<Integer> res = new ArrayList<>(n);
+
+        // Initialize with zeros
+        for (int i = 0; i < n; i++) res.add(0);
+
+        // s1 = res[0] + res[1] = arr[0]
+        // s2 = res[0] + res[2] = arr[1]
+        // s3 = res[1] + res[2] = arr[n-1]
+        int s1 = arr[0];
+        int s2 = arr[1];
+        int s3 = arr[n - 1];
+
+        // Calculate first three elements
+        int r0 = (s1 + s2 - s3) / 2;
+        int r1 = s1 - r0;
+        int r2 = s2 - r0;
+
+        res.set(0, r0);
+        res.set(1, r1);
+        res.set(2, r2);
+
+        // Fill remaining values
+        int idx = 2; // sums of (res[0], res[i])
+        for (int i = 3; i < n; i++) {
+            res.set(i, arr[idx++] - r0);
+        }
+
+        return res;
+    }
+}
