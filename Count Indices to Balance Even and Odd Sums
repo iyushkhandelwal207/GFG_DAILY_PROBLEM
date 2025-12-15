@@ -1,0 +1,42 @@
+class Solution {
+    public int cntWays(int[] arr) {
+        int n = arr.length;
+        
+        int totalEven = 0, totalOdd = 0;
+        
+        // Calculate total even and odd indexed sums
+        for (int i = 0; i < n; i++) {
+            if (i % 2 == 0)
+                totalEven += arr[i];
+            else
+                totalOdd += arr[i];
+        }
+        
+        int prefixEven = 0, prefixOdd = 0;
+        int count = 0;
+        
+        // Try removing each index
+        for (int i = 0; i < n; i++) {
+            int newEven, newOdd;
+            
+            if (i % 2 == 0) {
+                newEven = prefixEven + (totalOdd - prefixOdd);
+                newOdd  = prefixOdd + (totalEven - prefixEven - arr[i]);
+            } else {
+                newEven = prefixEven + (totalOdd - prefixOdd - arr[i]);
+                newOdd  = prefixOdd + (totalEven - prefixEven);
+            }
+            
+            if (newEven == newOdd)
+                count++;
+            
+            // Update prefix sums
+            if (i % 2 == 0)
+                prefixEven += arr[i];
+            else
+                prefixOdd += arr[i];
+        }
+        
+        return count;
+    }
+}
