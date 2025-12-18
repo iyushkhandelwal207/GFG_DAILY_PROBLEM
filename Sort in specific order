@@ -1,0 +1,43 @@
+class Solution {
+    public void sortIt(int[] arr) {
+        // code here
+        Arrays.sort(arr);
+        int odd_count=0;
+        int even_count=0;
+        for(int i=0;i<arr.length;i++){
+            if(arr[i]%2==0){
+                even_count++;
+            }else{
+                odd_count++;
+            }
+        }
+        int odd[]=new int[odd_count];
+        int even[]=new int[even_count];
+        int odd_new=0;
+        int even_new=0;
+        for(int i=0;i<arr.length;i++){
+            if(arr[i]%2==0){
+                even[even_new]=arr[i];
+                even_new++;
+            }else{
+                odd[odd_new]=arr[i];
+                odd_new++;
+            }
+        }
+        int ne[]=new int[arr.length];
+        int k=0;
+        Arrays.sort(odd);
+        Arrays.sort(even);
+        for(int i=odd.length-1;i>=0;i--){
+            ne[k]=odd[i];
+            k++;
+        }
+        for(int i=0;i<even.length;i++){
+            ne[k]=even[i];
+            k++;
+        }
+        for(int i=0;i<arr.length;i++){
+            arr[i]=ne[i];
+        }
+    }
+}
