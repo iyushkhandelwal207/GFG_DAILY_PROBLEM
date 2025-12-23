@@ -1,0 +1,50 @@
+import java.util.*;
+
+class Solution {
+    public ArrayList<Integer> cntInRange(int[] arr, int[][] queries) {
+        Arrays.sort(arr); // Step 1: sort array
+        
+        ArrayList<Integer> ans = new ArrayList<>();
+        
+        for (int[] q : queries) {
+            int a = q[0];
+            int b = q[1];
+            
+            int left = lowerBound(arr, a);
+            int right = upperBound(arr, b) - 1;
+            
+            if (left <= right) {
+                ans.add(right - left + 1);
+            } else {
+                ans.add(0);
+            }
+        }
+        return ans;
+    }
+
+    // First index where arr[index] >= target
+    private int lowerBound(int[] arr, int target) {
+        int low = 0, high = arr.length;
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (arr[mid] < target)
+                low = mid + 1;
+            else
+                high = mid;
+        }
+        return low;
+    }
+
+    // First index where arr[index] > target
+    private int upperBound(int[] arr, int target) {
+        int low = 0, high = arr.length;
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (arr[mid] <= target)
+                low = mid + 1;
+            else
+                high = mid;
+        }
+        return low;
+    }
+}
