@@ -1,0 +1,39 @@
+class Solution {
+    public ArrayList<Integer> findPeakGrid(int[][] mat) {
+        int n = mat.length;
+        int m = mat[0].length;
+
+        int left = 0, right = m - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            // Find row index of maximum element in mid column
+            int maxRow = 0;
+            for (int i = 0; i < n; i++) {
+                if (mat[i][mid] > mat[maxRow][mid]) {
+                    maxRow = i;
+                }
+            }
+
+            int leftVal = (mid - 1 >= 0) ? mat[maxRow][mid - 1] : Integer.MIN_VALUE;
+            int rightVal = (mid + 1 < m) ? mat[maxRow][mid + 1] : Integer.MIN_VALUE;
+
+            // Check peak condition
+            if (mat[maxRow][mid] >= leftVal && mat[maxRow][mid] >= rightVal) {
+                ArrayList<Integer> ans = new ArrayList<>();
+                ans.add(maxRow);
+                ans.add(mid);
+                return ans;
+            }
+            // Move search space
+            else if (leftVal > mat[maxRow][mid]) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return new ArrayList<>(); // safety (never reached)
+    }
+}
