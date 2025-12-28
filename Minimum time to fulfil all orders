@@ -1,0 +1,50 @@
+class Solution {
+    public int minTime(int[] ranks, int n) {
+        int low = 0;
+        int high = 0;
+
+        // find minimum rank chef
+        int minRank = Integer.MAX_VALUE;
+        for (int r : ranks) {
+            minRank = Math.min(minRank, r);
+        }
+
+        // worst case: fastest chef makes all donuts
+        high = minRank * n * (n + 1) / 2;
+
+        int ans = high;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (canMake(ranks, n, mid)) {
+                ans = mid;
+                high = mid - 1;   // try smaller time
+            } else {
+                low = mid + 1;    // need more time
+            }
+        }
+
+        return ans;
+    }
+
+    // helper function
+    private boolean canMake(int[] ranks, int n, int time) {
+        int donuts = 0;
+
+        for (int r : ranks) {
+            int t = r;
+            int cnt = 1;
+
+            while (t <= time) {
+                donuts++;
+                cnt++;
+                t += r * cnt;
+
+                if (donuts >= n)
+                    return true;
+            }
+        }
+        return false;
+    }
+}
