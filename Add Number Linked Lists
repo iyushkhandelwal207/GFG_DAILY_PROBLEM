@@ -1,0 +1,42 @@
+class Solution {
+
+    public Node addTwoLists(Node a, Node b) {
+
+        a = rev(a);
+        b = rev(b);
+
+        int carry = 0;
+        Node res = null;
+
+        while (a != null || b != null || carry != 0) {
+
+            int sum = carry;
+            if (a != null) { sum += a.data; a = a.next; }
+            if (b != null) { sum += b.data; b = b.next; }
+
+            carry = sum / 10;
+
+            Node n = new Node(sum % 10);
+            n.next = res;
+            res = n;
+        }
+
+        // 🔴 REMOVE LEADING ZEROS
+        while (res != null && res.data == 0 && res.next != null) {
+            res = res.next;
+        }
+
+        return res;
+    }
+
+    Node rev(Node h) {
+        Node p = null;
+        while (h != null) {
+            Node n = h.next;
+            h.next = p;
+            p = h;
+            h = n;
+        }
+        return p;
+    }
+}
