@@ -1,0 +1,30 @@
+import java.util.HashMap;
+
+class Solution {
+    public int countSubarrays(int[] arr, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        
+        int prefixSum = 0;
+        int count = 0;
+
+        // Base case: prefixSum = 0 occurs once
+        map.put(0, 1);
+
+        for (int num : arr) {
+            // Convert odd to 1, even to 0
+            if (num % 2 != 0) {
+                prefixSum++;
+            }
+
+            // Check if prefixSum - k exists
+            if (map.containsKey(prefixSum - k)) {
+                count += map.get(prefixSum - k);
+            }
+
+            // Store prefixSum frequency
+            map.put(prefixSum, map.getOrDefault(prefixSum, 0) + 1);
+        }
+
+        return count;
+    }
+}
