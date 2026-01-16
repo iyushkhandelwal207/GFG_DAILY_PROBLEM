@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Solution {
+
+    static class Interval {
+        int start, end;
+        Interval(int s, int e) {
+            start = s;
+            end = e;
+        }
+    }
+
+    public int minMen(int[] arr) {   // ✅ method name fixed
+        int n = arr.length;
+        List<Interval> intervals = new ArrayList<>();
+
+        // Create intervals
+        for (int i = 0; i < n; i++) {
+            if (arr[i] != -1) {
+                int start = Math.max(0, i - arr[i]);
+                int end = Math.min(n - 1, i + arr[i]);
+                intervals.add(new Interval(start, end));
+            }
+        }
+
+        // Sort by start time
+        intervals.sort((a, b) -> a.start - b.start);
+
+        int workers = 0;
+        int idx = 0;
+        int coveredTill = 0;
+
+        // Greedy coverage
+        while (coveredTill < n) {
+            int farthest = coveredTill;
+
+            while (idx < intervals.size() && intervals.get(idx).start <= coveredTill) {
+                farthest = Math.max(farthest, intervals.get(idx).end + 1);
+                idx++;
+            }
+
+            if (farthest == coveredTill) {
+                return -1; // gap found
+            }
+
+            workers++;
+            coveredTill = farthest;
+        }
+
+        return workers;
+    }
+}
