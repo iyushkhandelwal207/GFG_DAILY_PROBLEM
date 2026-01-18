@@ -1,0 +1,35 @@
+import java.util.*;
+
+class Solution {
+    public ArrayList<Integer> nextFreqGreater(int[] arr) {
+        int n = arr.length;
+        ArrayList<Integer> result = new ArrayList<>();
+        
+        // Step 1: Frequency Map
+        HashMap<Integer, Integer> freq = new HashMap<>();
+        for (int x : arr) {
+            freq.put(x, freq.getOrDefault(x, 0) + 1);
+        }
+
+        Stack<Integer> stack = new Stack<>();
+        int[] ans = new int[n];
+
+        // Step 2: Traverse from right to left
+        for (int i = n - 1; i >= 0; i--) {
+            int curr = arr[i];
+
+            while (!stack.isEmpty() && 
+                   freq.get(stack.peek()) <= freq.get(curr)) {
+                stack.pop();
+            }
+
+            ans[i] = stack.isEmpty() ? -1 : stack.peek();
+            stack.push(curr);
+        }
+
+        // Convert to ArrayList
+        for (int x : ans) result.add(x);
+
+        return result;
+    }
+}
