@@ -1,0 +1,15 @@
+class Solution {
+    int findWays(int n) {
+        // If n is odd, no valid parentheses possible
+        if (n % 2 != 0) return 0;
+
+        int pairs = n / 2;
+        long catalan = 1;
+
+        for (int i = 1; i <= pairs; i++) {
+            catalan = catalan * 2 * (2L * i - 1) / (i + 1);
+        }
+
+        return (int) catalan;
+    }
+}
