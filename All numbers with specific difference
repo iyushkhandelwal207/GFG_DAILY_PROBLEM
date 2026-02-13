@@ -1,0 +1,21 @@
+class Solution {
+    int digitSum(long x){
+        int s = 0;
+        while(x > 0){
+            s += x % 10;
+            x /= 10;
+        }
+        return s;
+    }
+    
+    public long getCount(long n, long d) {
+        long limit = Math.min(n, d + 100);
+        
+        for(long x = d; x <= limit; x++){
+            if(x - digitSum(x) >= d){
+                return n - x + 1;
+            }
+        }
+        return 0;
+    }
+}
