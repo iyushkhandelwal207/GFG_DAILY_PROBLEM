@@ -1,0 +1,24 @@
+class Solution {
+    static int noOfWays(int m, int n, int x) {
+        
+        int[] dp = new int[x + 1];
+        dp[0] = 1;
+        
+        for(int dice = 1; dice <= n; dice++) {
+            int[] newDp = new int[x + 1];
+            
+            for(int sum = 1; sum <= x; sum++) {
+                for(int face = 1; face <= m; face++) {
+                    
+                    if(sum - face >= 0) {
+                        newDp[sum] += dp[sum - face];
+                    }
+                }
+            }
+            
+            dp = newDp;
+        }
+        
+        return dp[x];
+    }
+}
