@@ -1,0 +1,25 @@
+import java.util.HashSet;
+
+class Solution {
+    boolean pythagoreanTriplet(int[] arr) {
+        int n = arr.length;
+        HashSet<Integer> squares = new HashSet<>();
+        
+        // Step 1: Square all elements and store in HashSet
+        for (int num : arr) {
+            squares.add(num * num);
+        }
+        
+        // Step 2: Check all pairs
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int sumSq = arr[i] * arr[i] + arr[j] * arr[j];
+                if (squares.contains(sumSq)) {
+                    return true; // Triplet found
+                }
+            }
+        }
+        
+        return false; // No triplet
+    }
+}
