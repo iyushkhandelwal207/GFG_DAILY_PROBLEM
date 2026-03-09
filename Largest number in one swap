@@ -1,0 +1,31 @@
+class Solution {
+    public static String largestSwap(String s) {
+        
+        int n = s.length();
+        int[] last = new int[10];
+
+        // store last index of each digit
+        for(int i = 0; i < n; i++){
+            last[s.charAt(i) - '0'] = i;
+        }
+
+        char[] arr = s.toCharArray();
+
+        for(int i = 0; i < n; i++){
+            int curr = arr[i] - '0';
+
+            // check larger digits
+            for(int d = 9; d > curr; d--){
+                if(last[d] > i){
+                    char temp = arr[i];
+                    arr[i] = arr[last[d]];
+                    arr[last[d]] = temp;
+
+                    return new String(arr);
+                }
+            }
+        }
+
+        return s;
+    }
+}
