@@ -1,0 +1,30 @@
+class Solution {
+    public int kBitFlips(int[] arr, int k) {
+        int n = arr.length;
+        int flipCount = 0;        // number of active flips affecting current index
+        int ans = 0;
+        
+        int[] isFlipped = new int[n]; // marks where flip starts
+        
+        for (int i = 0; i < n; i++) {
+            
+            // Remove effect of flip which is out of window
+            if (i >= k) {
+                flipCount ^= isFlipped[i - k];
+            }
+            
+            // If current bit after flips is 0, we must flip here
+            if ((arr[i] ^ flipCount) == 0) {
+                
+                // If not enough space to flip
+                if (i + k > n) return -1;
+                
+                ans++;
+                flipCount ^= 1;          // start new flip
+                isFlipped[i] = 1;        // mark flip start
+            }
+        }
+        
+        return ans;
+    }
+}
