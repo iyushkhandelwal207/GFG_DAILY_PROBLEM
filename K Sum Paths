@@ -1,0 +1,37 @@
+import java.util.HashMap;
+
+class Solution {
+    
+    public int countAllPaths(Node root, int k) {
+        HashMap<Long, Integer> map = new HashMap<>();
+        map.put(0L, 1);   // Important: handles path starting from root
+        return dfs(root, 0L, k, map);
+    }
+    
+    private int dfs(Node node, long currentSum, int k, HashMap<Long, Integer> map) {
+        if (node == null) {
+            return 0;
+        }
+        
+        currentSum += node.data;
+        
+        int count = 0;
+        
+        // Check if there exists a prefix sum = currentSum - k
+        if (map.containsKey(currentSum - k)) {
+            count += map.get(currentSum - k);
+        }
+        
+        // Add currentSum to map
+        map.put(currentSum, map.getOrDefault(currentSum, 0) + 1);
+        
+        // Recur for left and right
+        count += dfs(node.left, currentSum, k, map);
+        count += dfs(node.right, currentSum, k, map);
+        
+        // Backtrack: remove currentSum
+        map.put(currentSum, map.get(currentSum) - 1);
+        
+        return count;
+    }
+}
