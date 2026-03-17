@@ -1,0 +1,81 @@
+import java.util.*;
+
+class Solution {
+    public int minTime(Node root, int target) {
+        
+        // Step 1: Create parent mapping
+        Map<Node, Node> parentMap = new HashMap<>();
+        Node targetNode = buildParentMap(root, parentMap, target);
+        
+        // Step 2: Burn the tree using BFS
+        Queue<Node> queue = new LinkedList<>();
+        Set<Node> visited = new HashSet<>();
+        
+        queue.offer(targetNode);
+        visited.add(targetNode);
+        
+        int time = 0;
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            boolean isBurned = false;
+            
+            for (int i = 0; i < size; i++) {
+                Node current = queue.poll();
+                
+                // Left child
+                if (current.left != null && !visited.contains(current.left)) {
+                    queue.offer(current.left);
+                    visited.add(current.left);
+                    isBurned = true;
+                }
+                
+                // Right child
+                if (current.right != null && !visited.contains(current.right)) {
+                    queue.offer(current.right);
+                    visited.add(current.right);
+                    isBurned = true;
+                }
+                
+                // Parent
+                Node parent = parentMap.get(current);
+                if (parent != null && !visited.contains(parent)) {
+                    queue.offer(parent);
+                    visited.add(parent);
+                    isBurned = true;
+                }
+            }
+            
+            if (isBurned) time++;
+        }
+        
+        return time;
+    }
+    
+    private Node buildParentMap(Node root, Map<Node, Node> parentMap, int target) {
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        Node targetNode = null;
+        
+        while (!queue.isEmpty()) {
+            Node current = queue.poll();
+            
+            if (current.data == target) {
+                targetNode = current;
+            }
+            
+            if (current.left != null) {
+                parentMap.put(current.left, current);
+                queue.offer(current.left);
+            }
+            
+            if (current.right != null) {
+                parentMap.put(current.right, current);
+                queue.offer(current.right);
+            }
+        }
+        
+        return targetNode;
+    }
+}
