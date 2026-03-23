@@ -1,0 +1,40 @@
+class Solution {
+    public int longestCycle(int V, int[][] edges) {
+        
+        // Create adjacency (since at most one outgoing edge)
+        int[] adj = new int[V];
+        for(int i = 0; i < V; i++) adj[i] = -1;
+        
+        for(int i = 0; i < edges.length; i++){
+            adj[edges[i][0]] = edges[i][1];
+        }
+        
+        boolean[] visited = new boolean[V];
+        int[] timeVisited = new int[V];
+        int timer = 1;
+        int maxCycle = -1;
+        
+        for(int i = 0; i < V; i++){
+            
+            if(visited[i]) continue;
+            
+            int curr = i;
+            int startTime = timer;
+            
+            // Traverse until node becomes -1 or visited
+            while(curr != -1 && !visited[curr]){
+                visited[curr] = true;
+                timeVisited[curr] = timer++;
+                curr = adj[curr];
+            }
+            
+            // If we stopped because we found a visited node
+            if(curr != -1 && timeVisited[curr] >= startTime){
+                int cycleLength = timer - timeVisited[curr];
+                maxCycle = Math.max(maxCycle, cycleLength);
+            }
+        }
+        
+        return maxCycle;
+    }
+}
