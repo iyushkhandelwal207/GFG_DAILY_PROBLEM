@@ -1,0 +1,50 @@
+import java.util.*;
+
+class Solution {
+    public boolean canFinish(int n, int[][] prerequisites) {
+        
+        // Step 1: Create adjacency list
+        ArrayList<ArrayList<Integer>> graph = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            graph.add(new ArrayList<>());
+        }
+        
+        int[] indegree = new int[n];
+        
+        // Step 2: Build graph and indegree array
+        for(int[] pre : prerequisites){
+            int course = pre[0];
+            int prereq = pre[1];
+            
+            graph.get(prereq).add(course);
+            indegree[course]++;
+        }
+        
+        // Step 3: Add nodes with indegree 0 to queue
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i = 0; i < n; i++){
+            if(indegree[i] == 0){
+                queue.offer(i);
+            }
+        }
+        
+        int count = 0;
+        
+        // Step 4: Perform BFS
+        while(!queue.isEmpty()){
+            int curr = queue.poll();
+            count++;
+            
+            for(int neighbor : graph.get(curr)){
+                indegree[neighbor]--;
+                
+                if(indegree[neighbor] == 0){
+                    queue.offer(neighbor);
+                }
+            }
+        }
+        
+        // Step 5: If all courses processed → no cycle
+        return count == n;
+    }
+}
