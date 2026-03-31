@@ -1,0 +1,22 @@
+class Solution {
+    public int maxProfit(int arr[], int k) {
+        
+        if (arr.length == 0) return 0;
+        
+        int cash = 0;              // Profit when not holding stock
+        int hold = -arr[0];        // Profit when holding stock
+        
+        for (int i = 1; i < arr.length; i++) {
+            
+            int prevCash = cash;
+            
+            // Sell stock today
+            cash = Math.max(cash, hold + arr[i] - k);
+            
+            // Buy stock today
+            hold = Math.max(hold, prevCash - arr[i]);
+        }
+        
+        return cash;   // Final profit when not holding stock
+    }
+}
