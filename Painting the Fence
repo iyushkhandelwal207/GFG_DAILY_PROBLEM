@@ -1,0 +1,19 @@
+class Solution {
+    int countWays(int n, int k) {
+        
+        if (n == 1) 
+            return k;
+        
+        int same = k;              // For n = 2, same colors
+        int diff = k * (k - 1);    // For n = 2, different colors
+        
+        for (int i = 3; i <= n; i++) {
+            int prevDiff = diff;
+            
+            diff = (same + diff) * (k - 1);
+            same = prevDiff;
+        }
+        
+        return same + diff;
+    }
+}
