@@ -1,0 +1,66 @@
+import java.util.*;
+
+class Solution {
+    public int[] stableMarriage(int[][] men, int[][] women) {
+        int n = men.length;
+        
+        // result[i] = woman matched with man i
+        int[] result = new int[n];
+        
+        // womanPartner[j] = man matched with woman j
+        int[] womanPartner = new int[n];
+        
+        // nextProposal[i] = next woman index to whom man i will propose
+        int[] nextProposal = new int[n];
+        
+        // ranking[w][m] = preference rank of man m for woman w
+        int[][] ranking = new int[n][n];
+        
+        // Initially all women are free
+        Arrays.fill(womanPartner, -1);
+        
+        // Build ranking matrix for women (for quick comparison)
+        for (int w = 0; w < n; w++) {
+            for (int i = 0; i < n; i++) {
+                ranking[w][women[w][i]] = i;
+            }
+        }
+        
+        // Queue of free men
+        Queue<Integer> freeMen = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            freeMen.add(i);
+        }
+        
+        while (!freeMen.isEmpty()) {
+            int man = freeMen.poll();
+            
+            // Woman to propose
+            int woman = men[man][nextProposal[man]];
+            nextProposal[man]++;
+            
+            if (womanPartner[woman] == -1) {
+                // Woman is free
+                womanPartner[woman] = man;
+                result[man] = woman;
+            } else {
+                int currentMan = womanPartner[woman];
+                
+                // Check if woman prefers new man over current
+                if (ranking[woman][man] < ranking[woman][currentMan]) {
+                    // She prefers new man
+                    womanPartner[woman] = man;
+                    result[man] = woman;
+                    
+                    // Old partner becomes free
+                    freeMen.add(currentMan);
+                } else {
+                    // She rejects new man
+                    freeMen.add(man);
+                }
+            }
+        }
+        
+        return result;
+    }
+}
