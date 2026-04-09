@@ -1,0 +1,24 @@
+import java.util.*;
+
+class Solution {
+    ArrayList<Integer> intersection(int[] a, int[] b) {
+        
+        HashSet<Integer> setB = new HashSet<>();
+        ArrayList<Integer> result = new ArrayList<>();
+        
+     
+        for (int x : b) {
+            setB.add(x);
+        }
+        
+       
+        for (int x : a) {
+            if (setB.contains(x)) {
+                result.add(x);
+                setB.remove(x);  
+            }
+        }
+        
+        return result;
+    }
+}
