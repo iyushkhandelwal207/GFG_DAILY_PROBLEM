@@ -1,0 +1,18 @@
+class Solution {
+    public int countIncreasing(int[] arr) {
+        int n = arr.length;
+        int count = 0;
+        int len = 1; // current increasing length
+        
+        for (int i = 1; i < n; i++) {
+            if (arr[i] > arr[i - 1]) {
+                len++;
+                count += (len - 1); // new subarrays formed
+            } else {
+                len = 1; // reset
+            }
+        }
+        
+        return count;
+    }
+}
