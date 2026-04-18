@@ -1,0 +1,24 @@
+class Solution {
+    int maxOnes(int[] arr) {
+        int totalOnes = 0;
+
+        // Step 1: Count existing ones
+        for (int num : arr) {
+            if (num == 1) totalOnes++;
+        }
+
+        // Step 2: Apply Kadane on transformed values
+        int maxGain = 0;
+        int currGain = 0;
+
+        for (int num : arr) {
+            int val = (num == 0) ? 1 : -1;
+
+            currGain = Math.max(val, currGain + val);
+            maxGain = Math.max(maxGain, currGain);
+        }
+
+        // Step 3: Final result
+        return totalOnes + maxGain;
+    }
+}
