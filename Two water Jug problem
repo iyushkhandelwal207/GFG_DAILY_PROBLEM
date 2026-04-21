@@ -1,0 +1,49 @@
+class Solution {
+
+    public int minSteps(int m, int n, int d) {
+        // If d is greater than both jugs
+        if (d > Math.max(m, n)) return -1;
+
+        // Check feasibility using GCD
+        if (d % gcd(m, n) != 0) return -1;
+
+        // Try both ways and return minimum
+        return Math.min(pour(m, n, d), pour(n, m, d));
+    }
+
+    // Function to simulate pouring
+    private int pour(int from, int to, int d) {
+        int fromJug = from; // fill from jug
+        int toJug = 0;      // to jug initially empty
+        int step = 1;
+
+        while (fromJug != d && toJug != d) {
+            int temp = Math.min(fromJug, to - toJug);
+
+            toJug += temp;
+            fromJug -= temp;
+            step++;
+
+            if (fromJug == d || toJug == d)
+                break;
+
+            if (fromJug == 0) {
+                fromJug = from;
+                step++;
+            }
+
+            if (toJug == to) {
+                toJug = 0;
+                step++;
+            }
+        }
+
+        return step;
+    }
+
+    // GCD function
+    private int gcd(int a, int b) {
+        if (b == 0) return a;
+        return gcd(b, a % b);
+    }
+}
