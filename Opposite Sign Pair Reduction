@@ -1,0 +1,29 @@
+import java.util.*;
+
+class Solution {
+    public ArrayList<Integer> reducePairs(int[] arr) {
+        Stack<Integer> st = new Stack<>();
+
+        for (int x : arr) {
+            while (!st.isEmpty() && st.peek() * x < 0) {
+                int top = st.peek();
+
+                if (Math.abs(top) == Math.abs(x)) {
+                    st.pop();
+                    x = 0;
+                    break;
+                } else if (Math.abs(top) > Math.abs(x)) {
+                    x = 0;
+                    break;
+                } else {
+                    st.pop();
+                }
+            }
+            if (x != 0) st.push(x);
+        }
+
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int num : st) res.add(num);
+        return res;
+    }
+}
